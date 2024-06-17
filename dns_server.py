@@ -52,7 +52,7 @@ def start_dns_server():
     forwarders = ['1.1.1.1', '8.8.8.8']
     resolver = DynamicResolver(forwarders)
     logger = DNSLogger()
-    server = DNSServer(resolver, port=53, address="127.0.0.1", logger=logger)
+    server = DNSServer(resolver, port=53, address="0.0.0.0", logger=logger)
     server.start_thread()
 
 if __name__ == '__main__':
