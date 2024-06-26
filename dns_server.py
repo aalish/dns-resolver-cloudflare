@@ -1,16 +1,22 @@
 from dnslib.server import DNSServer, BaseResolver, DNSLogger
 from dnslib import RR, QTYPE, A, DNSRecord
 import socket
-import uuid
-
-# Simulated DNS records storage
-dns_records = {}
+import json
 
 class DynamicResolver(BaseResolver):
     def __init__(self, forwarders):
         self.forwarders = forwarders
+        self.dns_records_file = 'dns_records.json'
+    
+    def load_dns_records(self):
+        try:
+            with open(self.dns_records_file, 'r') as file:
+                return json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
 
     def resolve(self, request, handler):
+        dns_records = self.load_dns_records()
         reply = request.reply()
         qname = str(request.q.qname).rstrip('.')
         qtype = QTYPE[request.q.qtype]
@@ -57,5 +63,3 @@ def start_dns_server():
 
 if __name__ == '__main__':
     start_dns_server()
-    while True:
-        pass
